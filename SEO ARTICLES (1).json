@@ -1,0 +1,913 @@
+{
+  "name": "SEO ARTICLES",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1152,
+        -224
+      ],
+      "id": "51ee4781-f211-4d6f-99bb-c1efb21c5c57",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Country }}",
+        "options": {
+          "systemMessage": "You are an AI agent specialized in generating precise and effective search queries for the Google Custom Search JSON API to get the best results for writing articles for a vehicle exporting company.\n\nYour task is:\n\nTo receive the name of a country as input.\n\nTo generate a concise, relevant search query string that will retrieve accurate and comprehensive information about the country’s:\n\nvehicle Import/export regulations\n\nvehicle Customs duties\n\nVAT rules\n\nvehicle Shipping procedures\n\nvehicle Documentation requirements\n\nTrade restrictions and guidelines\n\nThe search query must focus on official or credible sources such as government websites, customs authorities, trade organizations, or reputable news sources.\n\nThe query should include keywords that ensure results specifically related to the country’s trade regulations, for example:\n\n“[Country] import regulations”\n\n“[Country] customs duties”\n\n“[Country] VAT rules”\n\n“[Country] import export shipping”\n\n“[Country] trade restrictions”\n\n“[Country] vehicle import documentation”\n\nAvoid generating overly broad or generic queries that could return irrelevant results.\n\nOutput only the final search query string without extra explanation or formatting."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -512,
+        -208
+      ],
+      "id": "b8a314b0-4173-4a02-82c6-bf6a4d314c62",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        -16
+      ],
+      "id": "31cd1892-4fbf-4c4c-9a59-5ed93415f25f",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5hqHOZIMj7rDmdZC",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "text",
+              "cssSelector": "body"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        1168,
+        -128
+      ],
+      "id": "4702c02c-e725-498d-93b5-92078e410fef",
+      "name": "HTML",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Text:{{ $json.text }}",
+        "options": {
+          "systemMessage": "You will receive as input:\n\nA cleaned and extracted text from one or more official or credible sources about a country’s import/export regulations, customs duties, VAT, restricted items, shipping methods, documentation, and trade rules.\n\nA list of validated image URLs, publicly accessible and confirmed to be working.\n\nA combined list of vehicle model names and their variants, sourced from two connected Google Sheets: Toyota models and Ford models.\n\nImportant instructions regarding the vehicle models and variants data:\nExtract only the model names and their variants from the connected Google Sheets.\n\nDo not include any prices, discounts, or pricing-related information.\n\nCombine the data from both sheets into a single unified list of model names and variants.\n\nYou must include a clearly labeled section titled “Available Vehicle Models and Variants” inside the article body where you list all the models and variants exactly as provided.\n\nFormat this section clearly, using a bullet list or an HTML table.\n\nThis section is mandatory and must appear inside the article content.\n\nYour main tasks:\n✅ Carefully extract relevant and factual information about the specified country only from the text input.\n\n✅ Generate an SEO-optimized blog article aimed at educating importers, exporters, and trade professionals.\n\n✅ Include a dedicated, visually appealing section outlining the steps to buy a vehicle from Pace Motors Thailand, for example:\n\nContact Pace Motors Thailand via WhatsApp or email.\n\nSelect and decide on a vehicle model from the available models and variants list.\n\nSend payment through International bank transfer (TT).\n\nReceive the car and all related export/import documents.\n\n✅ Embed at least 3 relevant images using <img> tags, following these strict rules:\n\nNever use image links from Unsplash.\n\nDo not use more than one image from the same website domain.\n\nUse only the provided validated image URLs.\n\nExclude image links that are broken, redirect, or empty.\n\nAlways add meaningful alt attributes and cite the image source clearly within the HTML.\n\n✅ Exclude any third-party business names, phone numbers, or promotional content (except WhatsApp/email in buying steps).\n\n✅ If any information is unclear or unverified, include the disclaimer:\n\n⚠️ This information is based on currently available sources and may be subject to change.\n\nOutput format:\nReturn the final result in JSON format with the following structure:\n\n{\n  \"title\": \"🔥 An SEO-friendly blog title (max 70 characters)\",\n  \"excerpt\": \"✏️ A short meta description summary (max 30 words)\",\n  \"hero_image_url\": \"🖼️ A relevant image URL for the blog header\",\n  \"article\": \"📝 A full article formatted in valid HTML with proper headings (<h2>, <h3>), bullet/numbered lists, tables, <strong>, <a>, and at least 3 embedded <img> tags with alt attributes and image source citations. Include a mandatory 'Available Vehicle Models and Variants' section listing all models and variants.\"\n}\n\nSEO keyword integration (use naturally and strategically):\nimport regulations in [country]\n\ncustoms duty for vehicles\n\nhow to import to [country]\n\n[country] VAT rules\n\nrestricted imports in [country]\n\ncar shipping to [country]\n\nArticle structure requirements:\nUse clear headings for each major section (e.g., Regulations, Taxes, Shipping Methods, Documents, Registration, Buying Steps, Available Vehicle Models and Variants).\n\nEmploy bullet points, numbered lists, bold highlights, tables, and hyperlinks where applicable for better readability.\n\nInclude a disclaimer footer reminding readers to verify information with official customs and government sources."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        1536,
+        -240
+      ],
+      "id": "eaab013d-a161-41ce-8689-f5c8e01b0eea",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        -80
+      ],
+      "id": "5520f79f-03b8-4cd4-b516-9b42fb190ab5",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "5hqHOZIMj7rDmdZC",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "24386834-3d86-44f2-b8b1-223dbd254cf7",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        -112
+      ],
+      "id": "204a95c6-992c-4836-8a17-296ca37ee878",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "content": "## SEO ARTICLE GENERATOR\n\n**Gets list of countries from Google Sheets**\n\n**Generates search query from AI Agent**\n\n**Searching the query through Google Custom JSON API**\n\n**Gets the relevant search results links and scrapes data**\n\n**AI Agent generates article based on the data**\n\n**Posts the generated article on the website**",
+        "height": 624,
+        "width": 1088,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -1072
+      ],
+      "id": "a62743f3-064b-421a-bf8f-93912d5d5e05",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Getting countries list from Sheets \n",
+        "height": 480,
+        "width": 576
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1248,
+        -336
+      ],
+      "id": "8c9cb7e0-8995-457f-999c-c30b9825e248",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RTg-pCYmVPQ2nB97OaHuhuFvbpXbVAEK8Axo1vSTo9k",
+          "mode": "list",
+          "cachedResultName": "Countries List",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RTg-pCYmVPQ2nB97OaHuhuFvbpXbVAEK8Axo1vSTo9k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RTg-pCYmVPQ2nB97OaHuhuFvbpXbVAEK8Axo1vSTo9k/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "driveSide",
+              "lookupValue": "left"
+            },
+            {
+              "lookupColumn": "Status"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -976,
+        -224
+      ],
+      "id": "fe52705a-60ba-4929-8b42-1b9a56bd016c",
+      "name": "Get Countries",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "w6LVO89hfmFkEU9e",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Query Generation and Searching\n",
+        "height": 480,
+        "width": 704
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -336
+      ],
+      "id": "dd6060f4-973a-4639-bc32-0cf3b8a696ab",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/customsearch/v1?key=AIzaSyAnUWyNZqA2IzwUZp7zB3fLOdJriXlrd2Y&cx=c75a2c778b4e14808:omuauf_lfve",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "AIzaSyAnUWyNZqA2IzwUZp7zB3fLOdJriXlrd2Y"
+            },
+            {
+              "name": "cx",
+              "value": "c75a2c778b4e14808"
+            },
+            {
+              "name": "q",
+              "value": "={{ $json.output }}"
+            },
+            {
+              "name": "exactTerms",
+              "value": "={{ $('Get Country Code').item.json.Country }}"
+            },
+            {
+              "name": "gl",
+              "value": "={{ $('Get Country Code').item.json.Code }}"
+            },
+            {
+              "name": "excludeTerms",
+              "value": "filetype:pdf"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -176,
+        -208
+      ],
+      "id": "d76dc6aa-4326-445a-a49a-cb838caab313",
+      "name": "Search Query"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = items[0].json;\n\n// Make sure items exist\nif (!response.items) {\n  return [];\n}\n\nconst results = response.items.map(item => ({\n  json: {\n    title: item.title,\n    link: item.link,\n    snippet: item.snippet,\n  }\n}));\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        144,
+        -144
+      ],
+      "id": "40700eb8-a71d-4a7c-8e41-7e49bef3b0f9",
+      "name": "Getting Results"
+    },
+    {
+      "parameters": {
+        "content": "## Web Scraping And Data Collection ",
+        "height": 480,
+        "width": 1312
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        112,
+        -336
+      ],
+      "id": "0dba1650-5262-41b2-91c9-833a16ea8675",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        400,
+        -176
+      ],
+      "id": "be24d817-9a9e-4ccc-8c8e-c9d19e022211",
+      "name": "Every Link"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.link }}",
+                    "rightValue": "pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "f2eccf98-25fe-4a05-acb7-04d8370c72bf"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ac776d86-9961-4104-9780-dad4bc124787",
+                    "leftValue": "={{ $json.link }}",
+                    "rightValue": "pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        624,
+        -128
+      ],
+      "id": "aac5b919-759d-48f0-aeff-295f231edaaf",
+      "name": "HTML OR PDF"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        832,
+        -112
+      ],
+      "id": "2b056914-7737-4309-a3e3-ea13c5657140",
+      "name": "Scrape Link",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const combinedText = items\n  .map(item => item.json.text)\n  .filter(text => text !== undefined && text !== null && text.toString().trim() !== '')\n  .join('\\n\\n'); // You can change this separator\n\nreturn [\n  {\n    json: {\n      text: combinedText\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        736,
+        -256
+      ],
+      "id": "1736274f-36e8-4006-9b95-90ffe4d985d1",
+      "name": "Sending Data to AI Agent"
+    },
+    {
+      "parameters": {
+        "content": "## Article Generation & Posting",
+        "height": 480,
+        "width": 944
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        -336
+      ],
+      "id": "bfc87559-5e20-4b5c-9df6-7ff77c10eb30",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.output || '';\n\n// Strip markdown code fences if present\nconst jsonString = raw.replace(/^```json\\s*/, '').replace(/```$/, '').trim();\n\ntry {\n  // Try parsing directly\n  return [{ json: JSON.parse(jsonString) }];\n} catch (error) {\n  // If parsing fails, attempt to fix common issues:\n\n  // 1. Sometimes strings have unescaped line breaks or quotes\n  // Replace unescaped newlines inside strings with spaces\n  let fixed = jsonString.replace(/\\\\n/g, ' ');\n\n  // 2. Remove control characters that may cause issues\n  fixed = fixed.replace(/[\\u0000-\\u001F]+/g, '');\n\n  // 3. Optionally, truncate the string at the error position to get partial JSON (use carefully)\n  // For example, if you know error pos 9188:\n  // fixed = fixed.substring(0, 9188);\n\n  try {\n    return [{ json: JSON.parse(fixed) }];\n  } catch (error2) {\n    throw new Error(`JSON parse failed after cleanup: ${error2.message}`);\n  }\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        -240
+      ],
+      "id": "096b83c9-0bca-44c8-9c2c-4c5e3f7b88a0",
+      "name": "Parsing Article"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://192.168.100.195:3000/upload-blog",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=title",
+              "value": "={{ $('Parsing Article').item.json.title }}"
+            },
+            {
+              "name": "hero_image_url",
+              "value": "={{ $('Parsing Article').item.json.hero_image_url }}"
+            },
+            {
+              "name": "article",
+              "value": "={{ $('Parsing Article').item.json.article }}"
+            },
+            {
+              "name": "excerpt",
+              "value": "={{ $('Parsing Article').item.json.excerpt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2080,
+        -240
+      ],
+      "id": "c9a79577-24eb-40c6-b244-4972c482bf57",
+      "name": "Posting on Website"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1RTg-pCYmVPQ2nB97OaHuhuFvbpXbVAEK8Axo1vSTo9k",
+          "mode": "list",
+          "cachedResultName": "Countries List",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RTg-pCYmVPQ2nB97OaHuhuFvbpXbVAEK8Axo1vSTo9k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RTg-pCYmVPQ2nB97OaHuhuFvbpXbVAEK8Axo1vSTo9k/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "Written",
+            "Country": "={{ $node[\"Get Countries\"].json[\"Country\"] }}"
+          },
+          "matchingColumns": [
+            "Country"
+          ],
+          "schema": [
+            {
+              "id": "Country",
+              "displayName": "Country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "driveSide",
+              "displayName": "driveSide",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2240,
+        -240
+      ],
+      "id": "17120891-9c64-4700-97d5-e410ac9b2f3f",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "w6LVO89hfmFkEU9e",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KSnT_MneTmTbKWPiN7012UV_vpferEtyK6gEcesit7U",
+          "mode": "list",
+          "cachedResultName": "Toyota Price List",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KSnT_MneTmTbKWPiN7012UV_vpferEtyK6gEcesit7U/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KSnT_MneTmTbKWPiN7012UV_vpferEtyK6gEcesit7U/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1696,
+        -32
+      ],
+      "id": "9d63f8ec-c755-4380-9d6b-0d9995dc451a",
+      "name": "Toyota Models",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "w6LVO89hfmFkEU9e",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12kJylo9QQzkdXawmQPBmKDuXOmJYHK1NLnEtalk-xYo",
+          "mode": "list",
+          "cachedResultName": "Ford Price List",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12kJylo9QQzkdXawmQPBmKDuXOmJYHK1NLnEtalk-xYo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12kJylo9QQzkdXawmQPBmKDuXOmJYHK1NLnEtalk-xYo/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1808,
+        -32
+      ],
+      "id": "eaa89f5e-950c-4352-b834-8653044741f4",
+      "name": "Ford Models",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "w6LVO89hfmFkEU9e",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1jrz0CzzgBJpqMo1AxmC14dIl3ozmSZztcFlxvWfjIw0",
+          "mode": "list",
+          "cachedResultName": "Country Codes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jrz0CzzgBJpqMo1AxmC14dIl3ozmSZztcFlxvWfjIw0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jrz0CzzgBJpqMo1AxmC14dIl3ozmSZztcFlxvWfjIw0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Country",
+              "lookupValue": "={{ $json.Country }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -816,
+        -224
+      ],
+      "id": "78e49fa1-1852-4067-9374-1fb1511e7290",
+      "name": "Get Country Code",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "w6LVO89hfmFkEU9e",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Countries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Search Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Every Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Every Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Parsing Article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Countries": {
+      "main": [
+        [
+          {
+            "node": "Get Country Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Query": {
+      "main": [
+        [
+          {
+            "node": "Getting Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Getting Results": {
+      "main": [
+        [
+          {
+            "node": "Every Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Link": {
+      "main": [
+        [
+          {
+            "node": "Sending Data to AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTML OR PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML OR PDF": {
+      "main": [
+        [
+          {
+            "node": "Every Link",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Scrape Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Link": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sending Data to AI Agent": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsing Article": {
+      "main": [
+        [
+          {
+            "node": "Posting on Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Posting on Website": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Toyota Models": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ford Models": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Country Code": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c0ea5247-dc22-4c34-b760-4a19fbf11e7d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f59ccd3d272e3704f31e35934c97763a486c30f473ddf02d7ee71e4ea27c79be"
+  },
+  "id": "b5g7OFp4G5JfOCQW",
+  "tags": []
+}
